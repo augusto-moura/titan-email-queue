@@ -48,6 +48,7 @@ function titan_eq_get_email_batch()
 	$emails = $wpdb->get_results( 
 		"SELECT * FROM {$table_name}
 		WHERE date_sent IS NOT NULL
+		AND error IS NOT NULL
 		ORDER BY date ASC
 		LIMIT 5;" 
 	);
