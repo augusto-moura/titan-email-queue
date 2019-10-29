@@ -33,7 +33,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
- * @package    WP Crontrol
+ * @package    Titan E-mail Queue
  * @author     Augusto Moura <augusto_moura40@hotmail.com>
  * @copyright  Copyright 2019 Augusto Moura
  * @license    https://choosealicense.com/licenses/mit/ MIT
@@ -41,25 +41,33 @@
  * @since      0.1
  */
 
+require_once 'cron.php';
+
 function titan_eq_activation()
 {
-	//TODO: activation hook
-	//Create tables if they don't exist.
-	//Create cron events if they don't exist.
+	require_once 'database.php';
+	titan_eq_create_tables();
+	titan_eq_register_cron_jobs();
 }
 register_activation_hook( __FILE__, 'titan_eq_activation' );
 
 function titan_eq_deactivation()
 {
 	//TODO: deactivation hook
-	//Remove cron events if they don't exist.
+	//Remove cron events.
 }
 register_deactivation_hook( __FILE__, 'titan_eq_deactivation' );
 
 function titan_eq_uninstall()
 {
 	//TODO: uninstall hook
-	//Remove tables.
+	require_once 'database.php';
+	titan_eq_drop_tables();
 	//Remove cron events.
 }
 register_uninstall_hook(__FILE__, 'titan_eq_uninstall');
+
+function titan_eq_plugin_init()
+{
+	require_once 'database.php';
+}
