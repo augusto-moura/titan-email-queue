@@ -6,6 +6,13 @@ function titan_eq_register_cron_jobs()
 	}
 }
 
+function titan_eq_unregister_cron_jobs()
+{
+	$timestamp = wp_next_scheduled( 'titan_email_queue' );
+	if($timestamp)
+		wp_unschedule_event( $timestamp, 'titan_email_queue' );
+}
+
 //
 
 function titan_eq_add_every_minute( $schedules ) {

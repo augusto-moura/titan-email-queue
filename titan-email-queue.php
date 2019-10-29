@@ -53,17 +53,15 @@ register_activation_hook( __FILE__, 'titan_eq_activation' );
 
 function titan_eq_deactivation()
 {
-	//TODO: deactivation hook
-	//Remove cron events.
+	titan_eq_unregister_cron_jobs();
 }
 register_deactivation_hook( __FILE__, 'titan_eq_deactivation' );
 
 function titan_eq_uninstall()
 {
-	//TODO: uninstall hook
 	require_once 'database.php';
 	titan_eq_drop_tables();
-	//Remove cron events.
+	titan_eq_unregister_cron_jobs();
 }
 register_uninstall_hook(__FILE__, 'titan_eq_uninstall');
 
@@ -71,3 +69,4 @@ function titan_eq_plugin_init()
 {
 	require_once 'database.php';
 }
+add_action( 'init', 'titan_eq_plugin_init' );
