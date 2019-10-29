@@ -47,9 +47,9 @@ function titan_eq_get_email_batch()
 	$table_name = "{$wpdb->prefix}titan_email_queue";
 	$emails = $wpdb->get_results( 
 		"SELECT * FROM {$table_name}
-		WHERE date_sent IS NOT NULL
-		AND error IS NOT NULL
-		ORDER BY date ASC
+		WHERE date_sent IS NULL
+		AND error IS NULL
+		ORDER BY date_registered, id ASC
 		LIMIT 5;" 
 	);
 	return $emails;
@@ -66,18 +66,21 @@ function titan_eq_update_email_status($email, $success)
 	$args = [];
 
 	if($success)
-		$set = " date_sent = CURDATE() ";
+		$set = " date_sent = NOW() ";
 	else{
+		$errorMsg = 'Error.';
+		if(!filter_var($email->email_to, FILTER_VALIDATE_EMAIL)) $errorMsg .= ' Argument \'email_to\' not valid.';
+		if(!$email->title) $errorMsg .= ' Argument \'title\' not valid.';
+		if(!$email->body) $errorMsg .= ' Argument \'body\' not valid.';
 		$set = " error = %s ";
-		$args[] = 'E-mail not sent.';
+		$args[] = $errorMsg;
 	}
 
-	$emails = $wpdb->get_results( $wpdb->prepare(
-		"UPDATE {$table_name}
-		SET {$set}
-		WHERE id = %d;"
-		, array_merge($args, [$email->id])
-	));
+	$sql = "	UPDATE {$table_name}
+				SET {$set}
+				WHERE id = %d;";
+	$args[] = $email->id;
+	$wpdb->get_results( $wpdb->prepare($sql, $args) );
 }
 
 /**
@@ -96,7 +99,7 @@ function titan_eq_add_email($emailAsArray)
 
 	$wpdb->get_results( $wpdb->prepare(
 		"INSERT INTO {$table_name} (email_to, title, body, type, info, date_registered)
-		VALUES (%s, %s, %s, %s, %s, CURDATE());"
+		VALUES (%s, %s, %s, %s, %s, NOW());"
 		, [$emailAsArray['email_to'], $emailAsArray['title'], $emailAsArray['body'], $emailAsArray['type'], $emailAsArray['info']]
 	));
 }

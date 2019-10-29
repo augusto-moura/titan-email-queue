@@ -26,10 +26,13 @@ add_filter( 'cron_schedules', 'titan_eq_add_every_minute' );
 
 function titan_eq_process_email_batch()
 {
-	require_once "database.php";
 	$emails = titan_eq_get_email_batch();
 	foreach($emails as $email){
-		$success = wp_mail($email->email_to, $email->title, $email->body, 'Content-Type: text/html; charset=UTF-8');
+		try{
+			$success = wp_mail($email->email_to, $email->title, $email->body, 'Content-Type: text/html; charset=UTF-8');
+		} catch(Exception $e){
+			$success = false;
+		}
 		titan_eq_update_email_status($email, $success);
 	}
 }

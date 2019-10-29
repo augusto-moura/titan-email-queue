@@ -10,28 +10,11 @@
  * Domain Path: 
  * License:     MIT
  *
- * LICENSE
- * MIT License
+ * Add e-mail messages to the queue using the function titan_eq_add_email() and that's it. Every minute, the plugin will process the next 5 e-mails. 
+ * The titan_eq_add_email() function accepts as parameter an array with the following keys:
+ * email_to, title, body, type (optional), info (optional)
  * 
- * Copyright (c) 2019 Augusto Moura
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * Repo: https://github.com/augusto-moura40/titan-email-queue 
  *
  * @package    Titan E-mail Queue
  * @author     Augusto Moura <augusto_moura40@hotmail.com>
@@ -42,10 +25,10 @@
  */
 
 require_once 'cron.php';
+require_once 'database.php';
 
 function titan_eq_activation()
 {
-	require_once 'database.php';
 	titan_eq_create_tables();
 	titan_eq_register_cron_jobs();
 }
@@ -59,7 +42,6 @@ register_deactivation_hook( __FILE__, 'titan_eq_deactivation' );
 
 function titan_eq_uninstall()
 {
-	require_once 'database.php';
 	titan_eq_drop_tables();
 	titan_eq_unregister_cron_jobs();
 }
@@ -67,6 +49,6 @@ register_uninstall_hook(__FILE__, 'titan_eq_uninstall');
 
 function titan_eq_plugin_init()
 {
-	require_once 'database.php';
+	titan_eq_process_email_batch();
 }
 add_action( 'init', 'titan_eq_plugin_init' );
