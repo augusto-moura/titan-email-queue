@@ -19,5 +19,5 @@ titan_eq_add_email([
 ]);
 ```
 
-* Repo: https://github.com/augusto-moura40/titan-email-queue
+* Repo: https://github.com/augusto-moura/titan-email-queue
 * Wordpress plugin page: ---
